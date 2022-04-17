@@ -1,1 +1,7 @@
 <h1>Your title  is {{ title }}</h1>
+
+
+<script>
+    const route = "{{ path('blog_show', {slug: 'my-blog-post'})|escape('js') }}";
+    console.log(route);
+</script>
