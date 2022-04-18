@@ -8,4 +8,5 @@
 /var/
 /vendor/
 /config/parameters.yaml
+/.env
 ###< symfony/framework-bundle ###

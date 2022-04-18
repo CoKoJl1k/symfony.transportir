@@ -1,6 +1,32 @@
 <h1>Your title  is {{ title }}</h1>
 
 
+{% for article in articles %}
+    {# the contents of this variable are dumped inside the page contents
+       and they are visible on the web page #}
+    {{ dump(article) }}
+    <a href="/article/{{ article.slug }}">
+        {{ article.title }}
+    </a>
+{% endfor %}
+
+
+{% if app.debug %}
+    <p>Request method: {{ app.request.method }}</p>
+    <p>Application Environment: {{ app.environment }}</p>
+{% endif %}
+
+
+{# the image lives at "public/images/logo.png" #}
+<img src="{{ asset('images/logo.jpg') }}"  width="700" height="500" alt="Symfony!"/>
+
+{# the CSS file lives at "public/css/blog.css" #}
+<link href="{{ asset('css/blog.css') }}" rel="stylesheet"/>
+
+{# the JS file lives at "public/bundles/acme/js/loader.js" #}
+<script src="{{ asset('bundles/acme/js/loader.js') }}"></script>
+
+
 <script>
     const route = "{{ path('blog_show', {slug: 'my-blog-post'})|escape('js') }}";
     console.log(route);
