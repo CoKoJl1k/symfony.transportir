@@ -11,12 +11,13 @@ class CommentsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /*
         $builder
             ->add('text')
             ->add('files')
             ->add('user_id')
             ->add('claims_id')
-        ;
+        ;*/
     }
 
     public function configureOptions(OptionsResolver $resolver): void

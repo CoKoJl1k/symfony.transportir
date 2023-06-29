@@ -5,12 +5,12 @@ namespace App\Entity;
 use App\Entity\Trait\CreatedAtTrait;
 use App\Entity\Trait\UpdatedAtTrait;
 use App\Repository\ClaimsRepository;
-use DateTime;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+
 
 
 #[ORM\Entity(repositoryClass: ClaimsRepository::class)]
@@ -34,13 +34,6 @@ class Claims
     #[ORM\Column]
     private ?int $status_id = null;
 
-
-    /*
-     * @Assert\NotBlank(message="Please, upload the photo.")
-     * @Assert\File(mimeTypes={ "image/png", "image/jpeg" })
-     */
-   // private $photo ;
-
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comments", mappedBy="claims")
      */
@@ -50,8 +43,9 @@ class Claims
     {
         $this->comments = new ArrayCollection();
     }
+
     /**
-     * @return Collection|Comments[]
+     * @return Collection
      */
     public function getComments(): Collection
     {

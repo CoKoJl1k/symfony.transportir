@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\CreatedAtTrait;
+use App\Entity\Trait\UpdatedAtTrait;
 use App\Repository\CommentsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CommentsRepository::class)]
 class Comments
 {
+    use CreatedAtTrait,UpdatedAtTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -93,6 +96,17 @@ class Comments
     {
         $this->claims_id = $claims_id;
 
+        return $this;
+    }
+
+    public function getFile(): ?string
+    {
+        return $this->files;
+    }
+
+    public function setFile($files): static
+    {
+        $this->files = $files;
         return $this;
     }
 }

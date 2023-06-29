@@ -4,7 +4,6 @@
 
 {% block body %}
     <h1>Claims</h1>
-
     <table class="table">
         <tbody>
             <tr>
@@ -17,32 +16,30 @@
             </tr>
             <tr>
                 <th>Files</th>
-                <td>{{ claim.files }}</td>
+                <td><img height="200" width="200" src="{{ asset('uploads/claims/')~claim.files }}" alt="file"/></td>
             </tr>
             <tr>
-                <th>User_id</th>
-                <td>{{ claim.userId }}</td>
+                <th>User</th>
+                <td>{{ claim.u_name }}</td>
             </tr>
             <tr>
-                <th>Status_id</th>
-                <td>{{ claim.statusId }}</td>
+                <th>Status</th>
+                <td>{{ claim.status }}</td>
             </tr>
         </tbody>
     </table>
     <a href="{{ path('app_claims_index') }}">back to list</a>
     <a href="{{ path('app_claims_edit', {'id': claim.id}) }}">edit</a>
     {{ include('claims/_delete_form.html.twig') }}
-
-
     <h1>Comments </h1>
-
     <table class="table">
         <thead>
         <tr>
             <th>Id</th>
             <th>Text</th>
             <th>Files</th>
-            <th>User_id</th>
+            <th>User</th>
+            <th>actions</th>
         </tr>
         </thead>
         <tbody>
@@ -50,9 +47,8 @@
             <tr>
                 <td>{{ comment.id }}</td>
                 <td>{{ comment.text }}</td>
-                <td>{{ comment.files }}</td>
+                <td><img height="200" width="200" src="{{ asset('uploads/comments/')~comment.files }}" alt="file"/></td>
                 <td>{{ comment.userId }}</td>
-
                 <td>
                     <a href="{{ path('app_comments_show', {'id': comment.id}) }}">show</a>
                     <a href="{{ path('app_comments_edit', {'id': comment.id}) }}">edit</a>
@@ -65,6 +61,5 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_comments_new') }}">Create new</a>
+    <a href="{{ path('app_comments_new',{'id': claim.id}) }}">Create new</a>
 {% endblock %}

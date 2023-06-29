@@ -9,6 +9,7 @@ use App\Entity\Status;
 use App\Entity\Users;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -49,21 +50,32 @@ class ClaimsRepository extends ServiceEntityRepository
      * @return Claims[] Returns an array of Claims objects
      */
 
-    public function getAllData(int $offset = 0, int $limit = 100): array
+    public function getClaimsUsers(int $offset = 0, int $limit = 100): array
     {
-
         return  $this->createQueryBuilder('c')
             ->select('c.id, c.text, c.files, c.created_at, c.updated_at, u.name as u_name, s.name as status')
             ->leftJoin(Users::class, 'u', Join::WITH, 'c.user_id = u.id')
             ->leftJoin(Status::class, 's', Join::WITH, 'c.status_id = s.id')
-            //   ->where('s.active = :active')
-            //   ->setParameter('active', 1)
             ->setFirstResult($offset)
             ->setMaxResults($limit)
             ->getQuery()
             ->getScalarResult();
     }
 
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getClaimUserById(int $id): array
+    {
+        return  $this->createQueryBuilder('c')
+            ->select('c.id, c.text, c.files, c.created_at, c.updated_at, u.name as u_name, s.name as status')
+            ->leftJoin(Users::class, 'u', Join::WITH, 'c.user_id = u.id')
+            ->leftJoin(Status::class, 's', Join::WITH, 'c.status_id = s.id')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
 //    /**
 //     * @return Claims[] Returns an array of Claims objects

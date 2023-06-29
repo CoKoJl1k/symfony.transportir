@@ -27,13 +27,11 @@ class ClaimsController extends AbstractController
     #[Route('/', name: 'app_claims_index', methods: ['GET'])]
     public function index(ClaimsRepository $claimsRepository): Response
     {
-
        // $host = base_path();
-        $claims = $claimsRepository->getAllData();
+        $claims = $claimsRepository->getClaimsUsers();
         // $claimsRepository->findAll()
         return $this->render('claims/index.html.twig', [
             'claims' => $claims,
-         //   'host' => $host
         ]);
     }
 
@@ -57,42 +55,38 @@ class ClaimsController extends AbstractController
             'form' => $form,
         ]);
         */
-
-        $claim = new Claims();
+/*
+       $claim = new Claims();
         $form = $this->createFormBuilder($claim)
             ->add('Text', TextType::class)
-            ->add('files', FileType::class, array('label' => 'Photo (png, jpeg)'))
+            ->add('files', FileType::class, array('label' => 'File'))
            // ->add('save', SubmitType::class, array('label' => 'Submit'))
             ->getForm();
+        $form->handleRequest($request);
+*/
+        $claim = new Claims();
+        $form = $this->createForm(ClaimsType::class, $claim);
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $path = $this->getParameter('kernel.project_dir')."/public/uploads";
-          //  dd($path);
-           // dd($claim->getPhoto());
+            $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
             $file = new File($claim->getFile());
             $fileName = md5(uniqid()).'.'.$file->guessExtension();
             $file->move($path, $fileName);
 
             $claim->setFile($fileName);
-
             $claim->setUserId(1);
             $claim->setStatusId(1);
-
             $dateTimeNow = new DateTimeImmutable();
-          //  dd($dateTimeNow2);
             $claim->setCreatedAt($dateTimeNow);
             $claim->setUpdatedAt($dateTimeNow);
 
             $claimsRepository->save($claim, true);
 
-            $claims = $claimsRepository->getAllData();
+            $claims = $claimsRepository->getClaimsUsers();
             return $this->render('claims/index.html.twig', [
                 'claims' => $claims,
             ]);
-          //  return new Response("User photo is successfully uploaded.");
         } else {
             return $this->render('claims/new.html.twig', array(
                 'form' => $form->createView(),
@@ -100,14 +94,18 @@ class ClaimsController extends AbstractController
         }
     }
 
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     #[Route('/{id}', name: 'app_claims_show', methods: ['GET'])]
-    public function show(Claims $claim, CommentsRepository $commentRepository): Response
+    public function show(Claims $claim, CommentsRepository $commentRepository,ClaimsRepository $claimsRepository): Response
     {
+        $claims = $claimsRepository->getClaimUserById($claim->getId());
+
         $comments = $commentRepository->findBy(['claims_id' => $claim]);
-       // dump($comments);die;
-        //dd($comments);
+
         return $this->render('claims/show.html.twig', [
-            'claim' => $claim,
+            'claim' => $claims ,
             'comments' => $comments,
         ]);
     }
