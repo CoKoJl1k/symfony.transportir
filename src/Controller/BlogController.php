@@ -51,8 +51,6 @@ class BlogController extends AbstractController
      */
     public function show(string $slug): Response
     {
-         return $this->render('blog/show.html.twig', [
-                      'slug' => $slug
-        ]);
+         return $this->render('blog/show.html.twig', ['slug' => $slug]);
     }
 }

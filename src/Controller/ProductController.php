@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/product")
  */
+#[ORM\Entity(repositoryClass: ProductRepository::class)]
 class ProductController extends AbstractController
 {
     /**
@@ -20,7 +22,6 @@ class ProductController extends AbstractController
      */
     public function index(ProductRepository $productRepository): Response
     {
-
         // retrieve the object from database
      //   $product = '';
   //  if (!$product) {
@@ -29,7 +30,6 @@ class ProductController extends AbstractController
         // throw new NotFoundHttpException('The product does not exist');
   //  }
    // dd('hello');
-
 
         return $this->render('product/index.html.twig', [
             'products' => $productRepository->findAll(),
@@ -43,6 +43,7 @@ class ProductController extends AbstractController
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
