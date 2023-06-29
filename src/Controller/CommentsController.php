@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Claims;
 use App\Entity\Comments;
+
 use App\Form\CommentsType;
 use App\Repository\CommentsRepository;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\File;
@@ -33,10 +35,8 @@ class CommentsController extends AbstractController
         $form = $this->createFormBuilder($comment)
             ->add('Text', TextType::class)
             ->add('files', FileType::class, array('label' => 'File'))
-            // ->add('save', SubmitType::class, array('label' => 'Submit'))
             ->getForm();
         $form->handleRequest($request);
-
 
         if ($form->isSubmitted() && $form->isValid()) {
             $path = $this->getParameter('kernel.project_dir')."/public/uploads/comments";
@@ -59,7 +59,6 @@ class CommentsController extends AbstractController
                 'form' => $form->createView(),
             ));
         }
-
     }
 
     #[Route('/{id}', name: 'app_comments_show', methods: ['GET'])]
@@ -79,7 +78,6 @@ class CommentsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $commentsRepository->save($comment, true);
             return $this->redirectToRoute('app_claims_show', ['id'=>$comment->getClaimsId()], Response::HTTP_SEE_OTHER);
-            //return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('comments/edit.html.twig', [

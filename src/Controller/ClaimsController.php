@@ -27,9 +27,7 @@ class ClaimsController extends AbstractController
     #[Route('/', name: 'app_claims_index', methods: ['GET'])]
     public function index(ClaimsRepository $claimsRepository): Response
     {
-       // $host = base_path();
         $claims = $claimsRepository->getClaimsUsers();
-        // $claimsRepository->findAll()
         return $this->render('claims/index.html.twig', [
             'claims' => $claims,
         ]);
@@ -39,35 +37,14 @@ class ClaimsController extends AbstractController
 
     public function new(Request $request, ClaimsRepository $claimsRepository): Response
     {
-        /*
         $claim = new Claims();
-        $claim->setUserId(1);
-        $claim->setStatusId(1);
-        $form = $this->createForm(ClaimsType::class, $claim);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $claimsRepository->save($claim, true);
-            return $this->redirectToRoute('app_claims_index', [], Response::HTTP_SEE_OTHER);
-        }
-        return $this->renderForm('claims/new.html.twig', [
-            'claim' => $claim,
-            'form' => $form,
-        ]);
-        */
-/*
-       $claim = new Claims();
         $form = $this->createFormBuilder($claim)
             ->add('Text', TextType::class)
             ->add('files', FileType::class, array('label' => 'File'))
-           // ->add('save', SubmitType::class, array('label' => 'Submit'))
             ->getForm();
         $form->handleRequest($request);
-*/
-        $claim = new Claims();
-        $form = $this->createForm(ClaimsType::class, $claim);
 
-        $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
             $file = new File($claim->getFile());
@@ -101,7 +78,6 @@ class ClaimsController extends AbstractController
     public function show(Claims $claim, CommentsRepository $commentRepository,ClaimsRepository $claimsRepository): Response
     {
         $claims = $claimsRepository->getClaimUserById($claim->getId());
-
         $comments = $commentRepository->findBy(['claims_id' => $claim]);
 
         return $this->render('claims/show.html.twig', [
