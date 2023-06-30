@@ -4,7 +4,6 @@
 
 {% block body %}
     <h1>Comments</h1>
-
     <table class="table">
         <tbody>
             <tr>
@@ -17,15 +16,15 @@
             </tr>
             <tr>
                 <th>Files</th>
-                <td>{{ comment.files }}</td>
+                <td><img height="200" width="200" src="{{ asset('uploads/comments/')~comment.files }}" alt="file"/></td>
             </tr>
             <tr>
                 <th>User_id</th>
-                <td>{{ comment.userId }}</td>
+                <td>{{ comment.user_name }}</td>
             </tr>
             <tr>
                 <th>Claims_id</th>
-                <td>{{ comment.claimsId }}</td>
+                <td>{{ comment.claims_id }}</td>
             </tr>
         </tbody>
     </table>

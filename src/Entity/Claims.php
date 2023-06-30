@@ -33,7 +33,7 @@ class Claims
 
 
     #[ORM\Column]
-    private ?int $status_id = null;
+    private ?int $status_id = 1;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comments", mappedBy="claims")
@@ -134,6 +134,4 @@ class Claims
         $this->files = $files;
         return $this;
     }
-
-
 }

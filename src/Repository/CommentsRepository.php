@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Claims;
 use App\Entity\Comments;
 
+use App\Entity\Status;
 use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -56,6 +57,20 @@ class CommentsRepository extends ServiceEntityRepository
             ->setParameter('id', $ClaimId)
             ->getQuery()
             ->getScalarResult();
+    }
+
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getCommentUserById(int $id): array
+    {
+        return  $this->createQueryBuilder('c')
+            ->select('c.id, c.text, c.files, c.claims_id, c.created_at, c.updated_at, u.name as user_name')
+            ->leftJoin(Users::class, 'u', Join::WITH, 'c.user_id = u.id')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 

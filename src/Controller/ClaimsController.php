@@ -31,7 +31,7 @@ class ClaimsController extends AbstractController
 
     #[Route('/new', name: 'app_claims_new', methods: ['GET', 'POST'])]
 
-    public function new(Request $request, ClaimsRepository $claimsRepository,FileService $fileService ): Response
+    public function new(Request $request, ClaimsRepository $claimsRepository, FileService $fileService): Response
     {
         $claim = new Claims();
         $form = $this->createForm(ClaimsType::class, $claim);
@@ -39,27 +39,14 @@ class ClaimsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form['file']->getData();
-            $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
-         //   $claim =  $fileService->saveFile($claim, $file, $path);
-            //$res =  $fileService->getHappyMessage();
-           //  dd($claim);
             if(!empty($file)){
-                $claim =  $fileService->saveFile($claim, $file, $path);
-/*
                 $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
-                $file = $form['file']->getData();
-                $fileName = md5(uniqid()).'.'.$file->guessExtension();
-                $file->move($path, $fileName);
-                $claim->setFile($fileName);
-*/
+                $claim =  $fileService->saveFile($claim, $file, $path);
             }
-
             $claim->setUserId(1);
-            $claim->setStatusId(1);
             $dateTimeNow = new DateTimeImmutable();
             $claim->setCreatedAt($dateTimeNow);
             $claim->setUpdatedAt($dateTimeNow);
-
             $claimsRepository->save($claim, true);
 
             $claims = $claimsRepository->getClaimsUsers();
@@ -80,7 +67,6 @@ class ClaimsController extends AbstractController
     public function show(Claims $claim, CommentsRepository $commentRepository, ClaimsRepository $claimsRepository): Response
     {
         $claims = $claimsRepository->getClaimUserById($claim->getId());
-        // $comments = $commentRepository->findBy(['claims_id' => $claim]);
         $comments = $commentRepository->getCommentsUsersByClaimId($claim->getId());
 
         return $this->render('claims/show.html.twig', [
@@ -90,19 +76,16 @@ class ClaimsController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_claims_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Claims $claim, ClaimsRepository $claimsRepository): Response
+    public function edit(Request $request, Claims $claim, ClaimsRepository $claimsRepository, FileService $fileService): Response
     {
         $form = $this->createForm(ClaimsType::class, $claim);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            if(!empty($form['file']->getData())){
+            $file = $form['file']->getData();
+            if (!empty($file)) {
                 $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
-                $file = $form['file']->getData();
-                $fileName = md5(uniqid()).'.'.$file->guessExtension();
-                $file->move($path, $fileName);
-                $claim->setFile($fileName);
+                $claim =  $fileService->saveFile($claim, $file, $path);
             }
             $claimsRepository->save($claim, true);
             return $this->redirectToRoute('app_claims_index', [], Response::HTTP_SEE_OTHER);

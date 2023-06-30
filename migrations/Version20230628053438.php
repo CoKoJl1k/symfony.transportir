@@ -24,7 +24,7 @@ final class Version20230628053438 extends AbstractMigration
         (
             id                int unsigned auto_increment primary key,
             text              text not null,
-            files             varchar(255)  null,
+            files             varchar(255) null,
             user_id           int unsigned not null,
             status_id         tinyint unsigned default 1,
             created_at        timestamp NULL DEFAULT CURRENT_TIMESTAMP,

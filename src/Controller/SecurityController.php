@@ -16,9 +16,9 @@ class SecurityController extends AbstractController
     public function login(LoggerInterface $logger): Response
     {
         $logger->info('We are logging!');
+        $logger->info('We are logging!');
+        $logger->info('We are logging!');
         $title = 'Login';
-        return $this->render('login/index.html.twig', [
-            'title' => $title
-        ]);
+        return $this->render('login/index.html.twig', ['title' => $title]);
     }
 }

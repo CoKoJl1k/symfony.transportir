@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Comments;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,7 +14,7 @@ class CommentsType extends AbstractType
     {
         $builder
             ->add('text')
-            ->add('files')
+            ->add('file', FileType::class, ['mapped' => false, 'required'=> false])
         ;
     }
 
