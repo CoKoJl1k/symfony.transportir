@@ -29,7 +29,6 @@ class Comments
     #[ORM\Column]
     private ?int $claims_id = null;
 
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Claims", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
@@ -59,7 +58,6 @@ class Comments
     public function setText(?string $text): static
     {
         $this->text = $text;
-
         return $this;
     }
 

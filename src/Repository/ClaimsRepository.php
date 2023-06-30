@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Claims;
-use App\Entity\Comments;
 
 use App\Entity\Status;
 use App\Entity\Users;
@@ -53,7 +52,7 @@ class ClaimsRepository extends ServiceEntityRepository
     public function getClaimsUsers(int $offset = 0, int $limit = 100): array
     {
         return  $this->createQueryBuilder('c')
-            ->select('c.id, c.text, c.files, c.created_at, c.updated_at, u.name as u_name, s.name as status')
+            ->select('c.id, c.text, c.files, c.created_at, c.updated_at, u.name as user_name, s.name as status')
             ->leftJoin(Users::class, 'u', Join::WITH, 'c.user_id = u.id')
             ->leftJoin(Status::class, 's', Join::WITH, 'c.status_id = s.id')
             ->setFirstResult($offset)
@@ -68,7 +67,7 @@ class ClaimsRepository extends ServiceEntityRepository
     public function getClaimUserById(int $id): array
     {
         return  $this->createQueryBuilder('c')
-            ->select('c.id, c.text, c.files, c.created_at, c.updated_at, u.name as u_name, s.name as status')
+            ->select('c.id, c.text, c.files, c.created_at, c.updated_at, u.name as user_name, s.name as status')
             ->leftJoin(Users::class, 'u', Join::WITH, 'c.user_id = u.id')
             ->leftJoin(Status::class, 's', Join::WITH, 'c.status_id = s.id')
             ->where('c.id = :id')

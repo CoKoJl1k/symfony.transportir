@@ -3,23 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\Claims;
-use App\Entity\Trait\CreatedAtTrait;
+
 use App\Form\ClaimsType;
 use App\Repository\ClaimsRepository;
 use App\Repository\CommentsRepository;
 
-use DateTime;
+use App\Service\FileService;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\File\File;
+
 
 #[Route('/claims')]
 class ClaimsController extends AbstractController
@@ -35,23 +31,29 @@ class ClaimsController extends AbstractController
 
     #[Route('/new', name: 'app_claims_new', methods: ['GET', 'POST'])]
 
-    public function new(Request $request, ClaimsRepository $claimsRepository): Response
+    public function new(Request $request, ClaimsRepository $claimsRepository,FileService $fileService ): Response
     {
         $claim = new Claims();
-        $form = $this->createFormBuilder($claim)
-            ->add('Text', TextType::class)
-            ->add('files', FileType::class, array('label' => 'File'))
-            ->getForm();
+        $form = $this->createForm(ClaimsType::class, $claim);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form['file']->getData();
             $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
-            $file = new File($claim->getFile());
-            $fileName = md5(uniqid()).'.'.$file->guessExtension();
-            $file->move($path, $fileName);
+         //   $claim =  $fileService->saveFile($claim, $file, $path);
+            //$res =  $fileService->getHappyMessage();
+           //  dd($claim);
+            if(!empty($file)){
+                $claim =  $fileService->saveFile($claim, $file, $path);
+/*
+                $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
+                $file = $form['file']->getData();
+                $fileName = md5(uniqid()).'.'.$file->guessExtension();
+                $file->move($path, $fileName);
+                $claim->setFile($fileName);
+*/
+            }
 
-            $claim->setFile($fileName);
             $claim->setUserId(1);
             $claim->setStatusId(1);
             $dateTimeNow = new DateTimeImmutable();
@@ -75,10 +77,11 @@ class ClaimsController extends AbstractController
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     #[Route('/{id}', name: 'app_claims_show', methods: ['GET'])]
-    public function show(Claims $claim, CommentsRepository $commentRepository,ClaimsRepository $claimsRepository): Response
+    public function show(Claims $claim, CommentsRepository $commentRepository, ClaimsRepository $claimsRepository): Response
     {
         $claims = $claimsRepository->getClaimUserById($claim->getId());
-        $comments = $commentRepository->findBy(['claims_id' => $claim]);
+        // $comments = $commentRepository->findBy(['claims_id' => $claim]);
+        $comments = $commentRepository->getCommentsUsersByClaimId($claim->getId());
 
         return $this->render('claims/show.html.twig', [
             'claim' => $claims ,
@@ -93,6 +96,14 @@ class ClaimsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if(!empty($form['file']->getData())){
+                $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
+                $file = $form['file']->getData();
+                $fileName = md5(uniqid()).'.'.$file->guessExtension();
+                $file->move($path, $fileName);
+                $claim->setFile($fileName);
+            }
             $claimsRepository->save($claim, true);
             return $this->redirectToRoute('app_claims_index', [], Response::HTTP_SEE_OTHER);
         }

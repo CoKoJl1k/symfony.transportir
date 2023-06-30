@@ -31,6 +31,7 @@ class Claims
     #[ORM\Column]
     private ?int $user_id = null;
 
+
     #[ORM\Column]
     private ?int $status_id = null;
 
@@ -133,7 +134,6 @@ class Claims
         $this->files = $files;
         return $this;
     }
-
 
 
 }

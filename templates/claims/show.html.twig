@@ -20,7 +20,7 @@
             </tr>
             <tr>
                 <th>User</th>
-                <td>{{ claim.u_name }}</td>
+                <td>{{ claim.user_name }}</td>
             </tr>
             <tr>
                 <th>Status</th>
@@ -48,7 +48,7 @@
                 <td>{{ comment.id }}</td>
                 <td>{{ comment.text }}</td>
                 <td><img height="200" width="200" src="{{ asset('uploads/comments/')~comment.files }}" alt="file"/></td>
-                <td>{{ comment.userId }}</td>
+                <td>{{  comment.user_name }}  </td>
                 <td>
                     <a href="{{ path('app_comments_show', {'id': comment.id}) }}">show</a>
                     <a href="{{ path('app_comments_edit', {'id': comment.id}) }}">edit</a>
