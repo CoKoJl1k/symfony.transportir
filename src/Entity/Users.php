@@ -4,9 +4,10 @@ namespace App\Entity;
 
 use App\Repository\UsersRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
-class Users
+class Users implements  UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,6 +23,12 @@ class Users
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $token = null;
+
+    #[ORM\Column(type: 'json')]
+    private array $roles = [] ;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -35,7 +42,6 @@ class Users
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -47,7 +53,6 @@ class Users
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -61,5 +66,36 @@ class Users
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): static
+    {
+        $this->token = $token;
+        return $this;
+    }
+
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->id;
+        // TODO: Implement getUserIdentifier() method.
     }
 }

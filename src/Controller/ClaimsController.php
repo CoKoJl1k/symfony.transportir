@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Claims;
 
+use App\Entity\Users;
 use App\Form\ClaimsType;
 use App\Repository\ClaimsRepository;
 use App\Repository\CommentsRepository;
 
+use App\Repository\UsersRepository;
 use App\Service\FileService;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,8 +23,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class ClaimsController extends AbstractController
 {
     #[Route('/', name: 'app_claims_index', methods: ['GET'])]
-    public function index(ClaimsRepository $claimsRepository): Response
+    public function index(ClaimsRepository $claimsRepository ): Response
     {
+      //  $user = new Users();
+      //  $roles = $user->getRoles();
+       // dd($roles);
         $claims = $claimsRepository->getClaimsUsers();
         return $this->render('claims/index.html.twig', [
             'claims' => $claims,

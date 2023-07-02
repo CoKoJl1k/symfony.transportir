@@ -26,6 +26,8 @@ final class Version20230627124305 extends AbstractMigration
             name              varchar(255) not null,
             email             varchar(255) not null,
             password          varchar(255) not null,
+            roles             json  null,
+            token             varchar(255) not null,
             created_at        timestamp NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at        timestamp NULL DEFAULT CURRENT_TIMESTAMP,
             constraint users_email_unique  unique (email)
