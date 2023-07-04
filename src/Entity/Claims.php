@@ -31,9 +31,10 @@ class Claims
     #[ORM\Column]
     private ?int $user_id = null;
 
-
     #[ORM\Column]
     private ?int $status_id = 1;
+
+    public ?object $status;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comments", mappedBy="claims")
@@ -134,4 +135,12 @@ class Claims
         $this->files = $files;
         return $this;
     }
+
+    /*
+    public function getStatus(Status $status): Status
+    {
+        return $status;
+    }
+*/
+
 }

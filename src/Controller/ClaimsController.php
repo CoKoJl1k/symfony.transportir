@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Claims;
 
+use App\Entity\Status;
 use App\Entity\Users;
 use App\Form\ClaimsType;
 use App\Repository\ClaimsRepository;
@@ -25,9 +26,6 @@ class ClaimsController extends AbstractController
     #[Route('/', name: 'app_claims_index', methods: ['GET'])]
     public function index(ClaimsRepository $claimsRepository ): Response
     {
-      //  $user = new Users();
-      //  $roles = $user->getRoles();
-       // dd($roles);
         $claims = $claimsRepository->getClaimsUsers();
         return $this->render('claims/index.html.twig', [
             'claims' => $claims,
@@ -87,11 +85,16 @@ class ClaimsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+           // dd($request);
             $file = $form['file']->getData();
             if (!empty($file)) {
                 $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
                 $claim =  $fileService->saveFile($claim, $file, $path);
             }
+            $status = $form['status']->getData();
+            $claim->setStatusId($status->getId());
+            $dateTimeNow = new DateTimeImmutable();
+            $claim->setUpdatedAt($dateTimeNow);
             $claimsRepository->save($claim, true);
             return $this->redirectToRoute('app_claims_index', [], Response::HTTP_SEE_OTHER);
         }
