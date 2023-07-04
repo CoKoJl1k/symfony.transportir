@@ -4,13 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Claims;
 
-use App\Entity\Status;
-use App\Entity\Users;
 use App\Form\ClaimsType;
 use App\Repository\ClaimsRepository;
 use App\Repository\CommentsRepository;
 
-use App\Repository\UsersRepository;
 use App\Service\FileService;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -85,7 +82,6 @@ class ClaimsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-           // dd($request);
             $file = $form['file']->getData();
             if (!empty($file)) {
                 $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
