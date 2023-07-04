@@ -104,7 +104,7 @@ class ClaimsController extends AbstractController
         $form = $this->createForm(ClaimsType::class, $claim);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() /* && $form->isValid()*/) {
             $file = $form['file']->getData();
             if (!empty($file)) {
                 $path = $this->getParameter('kernel.project_dir') . "/public/uploads/claims";
