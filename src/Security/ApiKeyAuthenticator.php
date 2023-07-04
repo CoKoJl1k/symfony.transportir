@@ -30,7 +30,6 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
     {
         $apiToken = $request->get('token');
         //$apiToken = $request->headers->get('X-AUTH-TOKEN');
-
         //dd($apiToken);
         if (null === $apiToken) {
             // The token header was empty, authentication fails with HTTP Status
@@ -51,7 +50,6 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
         $data = [
             // you may want to customize or obfuscate the message first
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
-
             // or to translate this message
             // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
         ];

@@ -26,6 +26,7 @@ class Users implements  UserInterface
     #[ORM\Column(length: 255)]
     private ?string $token = null;
 
+
     #[ORM\Column(type: 'json')]
     private array $roles = [] ;
 

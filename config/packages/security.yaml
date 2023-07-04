@@ -6,23 +6,23 @@ security:
             algorithm: auto
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
-       # app_user_provider:
-         #   entity:
-          #      class: App\Entity\Users
-             #   property: token
+       # users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Entity\Users
+                property: token
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            lazy: true
-            provider: users_in_memory
-           # provider: app_user_provider
-           # entry_point: App\Security\AuthenticationEntryPoint
-           # access_denied_handler: App\Security\AccessDeniedHandler
-           # custom_authenticators:
-           #     - App\Security\ApiKeyAuthenticator
+           #  lazy: true
+          #   provider: users_in_memory
+            provider: app_user_provider
+            entry_point: App\Security\AuthenticationEntryPoint
+            access_denied_handler: App\Security\AccessDeniedHandler
+            custom_authenticators:
+               - App\Security\ApiKeyAuthenticator
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -34,10 +34,10 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-      #  - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
-      #  - { path: ^/public, roles: PUBLIC_ACCESS }
-      #  - { path: ^/claims, roles: ROLE_ADMIN }
-      #  - { path: ^/comments, roles: ROLE_MANAGER }
+       #  - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+       #  - { path: ^/public, roles: PUBLIC_ACCESS }
+       #  - { path: ^/claims, roles: ROLE_ADMIN }
+       #  - { path: ^/comments, roles: ROLE_MANAGER }
        # - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 when@test:
     security:

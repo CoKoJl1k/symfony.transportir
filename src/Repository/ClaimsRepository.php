@@ -62,6 +62,23 @@ class ClaimsRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return Claims[] Returns an array of Claims objects
+     */
+
+    public function getClaimsUserByUserId(int $user_id): array
+    {
+        return  $this->createQueryBuilder('c')
+            ->select('c.id, c.text, c.files, c.created_at, c.updated_at, u.name as user_name, s.name as status')
+            ->leftJoin(Users::class, 'u', Join::WITH, 'c.user_id = u.id')
+            ->leftJoin(Status::class, 's', Join::WITH, 'c.status_id = s.id')
+            ->where('u.id = :id')
+            ->setParameter('id', $user_id)
+            ->getQuery()
+            ->getScalarResult();
+    }
+
+
+    /**
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getClaimUserById(int $id): array

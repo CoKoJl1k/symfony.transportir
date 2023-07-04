@@ -12,46 +12,69 @@ use App\Service\FileService;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 #[Route('/claims')]
 class ClaimsController extends AbstractController
 {
     #[Route('/', name: 'app_claims_index', methods: ['GET'])]
-    public function index(ClaimsRepository $claimsRepository ): Response
+    public function index(ClaimsRepository $claimsRepository, UserInterface $user, Request $request): Response
     {
-        $claims = $claimsRepository->getClaimsUsers();
+        $roles = $user->getRoles();
+        $user_id = $user->getUserIdentifier();
+        if (in_array($roles, array('ROLE_ADMIN', 'ROLE_MANAGER'))) {
+            $claims = $claimsRepository->getClaimsUsers();
+        } else {
+            $claims = $claimsRepository->getClaimsUserByUserId($user_id);
+        }
+        $token = $user->getToken();
+
         return $this->render('claims/index.html.twig', [
             'claims' => $claims,
+            'token'  => $token
         ]);
     }
 
     #[Route('/new', name: 'app_claims_new', methods: ['GET', 'POST'])]
-
-    public function new(Request $request, ClaimsRepository $claimsRepository, FileService $fileService): Response
+    public function new(Request $request, ClaimsRepository $claimsRepository, FileService $fileService, UserInterface $user): Response
     {
         $claim = new Claims();
         $form = $this->createForm(ClaimsType::class, $claim);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() /*&& $form->isValid()*/) {
+
+           // dd($form);
             $file = $form['file']->getData();
-            if(!empty($file)){
-                $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
-                $claim =  $fileService->saveFile($claim, $file, $path);
+            if (!empty($file)) {
+                $path = $this->getParameter('kernel.project_dir') . "/public/uploads/claims";
+                $claim = $fileService->saveFile($claim, $file, $path);
             }
-            $claim->setUserId(1);
+            $user_id = $user->getUserIdentifier();
+            $claim->setUserId($user_id);
             $dateTimeNow = new DateTimeImmutable();
             $claim->setCreatedAt($dateTimeNow);
             $claim->setUpdatedAt($dateTimeNow);
             $claimsRepository->save($claim, true);
 
-            $claims = $claimsRepository->getClaimsUsers();
+            $roles = $user->getRoles();
+            $user_id = $user->getUserIdentifier();
+
+            if (in_array($roles, array('ROLE_ADMIN', 'ROLE_MANAGER'))) {
+                $claims = $claimsRepository->getClaimsUsers();
+            } else {
+                $claims = $claimsRepository->getClaimsUserByUserId($user_id);
+            }
+            $token = $user->getToken();
+
             return $this->render('claims/index.html.twig', [
                 'claims' => $claims,
+                'token' => $token
             ]);
         } else {
             return $this->render('claims/new.html.twig', array(
@@ -70,7 +93,7 @@ class ClaimsController extends AbstractController
         $comments = $commentRepository->getCommentsUsersByClaimId($claim->getId());
 
         return $this->render('claims/show.html.twig', [
-            'claim' => $claims ,
+            'claim' => $claims,
             'comments' => $comments,
         ]);
     }
@@ -84,8 +107,8 @@ class ClaimsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form['file']->getData();
             if (!empty($file)) {
-                $path = $this->getParameter('kernel.project_dir')."/public/uploads/claims";
-                $claim =  $fileService->saveFile($claim, $file, $path);
+                $path = $this->getParameter('kernel.project_dir') . "/public/uploads/claims";
+                $claim = $fileService->saveFile($claim, $file, $path);
             }
             $status = $form['status']->getData();
             $claim->setStatusId($status->getId());
@@ -104,7 +127,7 @@ class ClaimsController extends AbstractController
     #[Route('/{id}', name: 'app_claims_delete', methods: ['POST'])]
     public function delete(Request $request, Claims $claim, ClaimsRepository $claimsRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$claim->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $claim->getId(), $request->request->get('_token'))) {
             $claimsRepository->remove($claim, true);
         }
         return $this->redirectToRoute('app_claims_index', [], Response::HTTP_SEE_OTHER);

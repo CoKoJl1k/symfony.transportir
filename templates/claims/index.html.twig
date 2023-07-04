@@ -29,8 +29,8 @@
                 <td>{{ claim.created_at }}</td>
                 <td>{{ claim.updated_at }}</td>
                 <td>
-                    <a href="{{ path('app_claims_show', {'id': claim.id}) }}">show</a>
-                    <a href="{{ path('app_claims_edit', {'id': claim.id}) }}">edit</a>
+                    <a href="{{ path('app_claims_show', {'id': claim.id, 'token': token}) }}">show</a>
+                    <a href="{{ path('app_claims_edit', {'id': claim.id, 'token': token}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -41,5 +41,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_claims_new') }}">Create new</a>
+    <a href="{{ path('app_claims_new', {'token': token}) }}">Create new</a>
 {% endblock %}
